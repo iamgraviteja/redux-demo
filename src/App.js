@@ -1,57 +1,65 @@
+import { useState, useEffect, useCallback } from "react";
 import Layout from "./components/Layout/Layout";
-import { useRef, useState } from "react";
+/**
+ * Image 1: https://splidejs.com/images/slides/image-slider/01.jpg
+ * Image 2: https://splidejs.com/images/slides/image-slider/02.jpg
+ * Image 3: https://splidejs.com/images/slides/image-slider/03.jpg
+ */
 
-function App() {
-  const [count, setCount] = useState(0);
-  let timer = useRef(null);
-  const handleStart = () => {
-    timer.current = setInterval(() => {
-      setCount((prevState) => prevState + 1);
-    }, 1000);
+const images = [
+  "https://splidejs.com/images/slides/image-slider/01.jpg",
+  "https://splidejs.com/images/slides/image-slider/02.jpg",
+  "https://splidejs.com/images/slides/image-slider/03.jpg",
+];
+
+export default function App() {
+  const [currentImage, setCurrentImage] = useState(0);
+
+  const nextImage = useCallback(() => {
+    setCurrentImage((prevState) => (prevState + 1) % images.length);
+  }, []);
+
+  const prevImage = () => {
+    setCurrentImage(
+      (prevState) => (prevState - 1 + images.length) % images.length
+    );
   };
 
-  const handleStop = () => {
-    clearInterval(timer.current);
-  };
-
-  const handleReset = () => {
-    setCount(0);
-    clearInterval(timer.current);
-  };
-
-  const padStartNum = (num) => {
-    return num.toString().padStart(2, 0);
-  };
-
-  const processCount = (count) => {
-    const seconds = count % 60;
-    const minutes = Math.floor(count / 60) % 60;
-    const hours = Math.floor(count / 3600);
-
-    return `${padStartNum(hours)}:${padStartNum(minutes)}:${padStartNum(
-      seconds
-    )}`;
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextImage();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [nextImage]);
 
   return (
     <Layout>
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          marginTop: "20px",
+          width: "500px",
+          height: "400px",
+          margin: "20px auto",
         }}
       >
-        <div>{processCount(count)}</div>
-        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-          <button onClick={handleStart}>Start</button>
-          <button onClick={handleStop}>Stop</button>
-          <button onClick={handleReset}>Reset</button>
-        </div>
+        <img
+          src={images[currentImage]}
+          style={{ width: "100%", height: "auto", objectFit: "contain" }}
+          key={currentImage}
+          alt={`image-${currentImage}`}
+          loading="lazy"
+        />
+      </div>
+      <div
+        style={{
+          marginTop: "10px",
+          display: "flex",
+          justifyContent: "center",
+          gap: "10px",
+        }}
+      >
+        <button onClick={prevImage}>Prev</button>
+        <button onClick={nextImage}>Next</button>
       </div>
     </Layout>
   );
 }
-
-export default App;
