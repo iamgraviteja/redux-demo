@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Noto Sans JP', sans-serif;
+  --color-bg: #ffffff;
+  --color-font: #000000;
+}
+
+html.dark {
+  --color-bg: #3f3f3f;
+  --color-font: #ffffff;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #1a8ed1;
+  border: 1px solid #1a8ed1;
+}
+
+button:hover,
+button:active {
+  background-color: #1ac5d1;
+  border-color: #1ac5d1;
+  color: white;
+}
+
+.card {
+  margin: 1rem auto;
+  border-radius: 6px;
+  background-color: white;
+  padding: 1rem;
+  width: 90%;
+  max-width: 40rem;
+  color: var(--color-font);
+  border: 2px solid lightcyan;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card {
+  background-color: #4f4f4f;
+}
