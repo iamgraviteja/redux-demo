@@ -1,1 +1,1 @@
-# redux-practice
+# redux-demo

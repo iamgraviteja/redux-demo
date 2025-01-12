@@ -1,41 +1,55 @@
-import { useSelector, useDispatch } from 'react-redux';
-import Cart from './components/Cart/Cart';
-import Layout from './components/Layout/Layout';
-import Products from './components/Shop/Products';
-import { useEffect } from 'react';
-import { toggleMode } from './store/ui-slice';
+import Layout from "./components/Layout/Layout";
+import { useRef, useState } from "react";
 
 function App() {
-  const isCartVisible = useSelector(state => state.ui.cartIsVisible);
-  const mode = useSelector(state => state.ui.mode);
-const dispatch = useDispatch();
+  const [count, setCount] = useState(0);
+  let timer = useRef(null);
+  const handleStart = () => {
+    timer.current = setInterval(() => {
+      setCount((prevState) => prevState + 1);
+    }, 1000);
+  };
 
-useEffect(() => {
-    document.documentElement.className = mode;
-}, [mode]);
+  const handleStop = () => {
+    clearInterval(timer.current);
+  };
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  const handleReset = () => {
+    setCount(0);
+    clearInterval(timer.current);
+  };
 
-    // Listener for changes in the system theme preference
-    const handleChange = (e) => {
-      dispatch(toggleMode(e.matches ? 'dark' : 'light'));
-    };
+  const padStartNum = (num) => {
+    return num.toString().padStart(2, 0);
+  };
 
-    // Add listener
-    mediaQuery.addEventListener('change', handleChange);
+  const processCount = (count) => {
+    const seconds = count % 60;
+    const minutes = Math.floor(count / 60) % 60;
+    const hours = Math.floor(count / 3600);
 
-    // Cleanup listener on component unmount
-    return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-    };
-  }, []);
-
+    return `${padStartNum(hours)}:${padStartNum(minutes)}:${padStartNum(
+      seconds
+    )}`;
+  };
 
   return (
     <Layout>
-      {isCartVisible && <Cart />}
-      <Products />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "20px",
+        }}
+      >
+        <div>{processCount(count)}</div>
+        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+          <button onClick={handleStart}>Start</button>
+          <button onClick={handleStop}>Stop</button>
+          <button onClick={handleReset}>Reset</button>
+        </div>
+      </div>
     </Layout>
   );
 }
